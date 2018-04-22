@@ -60,7 +60,7 @@ public class Weapon : MonoBehaviour {
         // weapons print their own ammo and shit
         GUI.Label(new Rect(10, Screen.height - 80, 600, 20), "Equipped: " + Name);
         GUI.Label(new Rect(10, Screen.height - 60, 600, 20),
-            curAmmo + "/" + MagSize + (UsesAmmoMags ? " | Mags: " + GameController.AmmoMags : ""));
+            curAmmo + "/" + MagSize + (UsesAmmoMags ? " | Mags: " + GameController.AmmoMags : " (Fabricates ammo over time)"));
     }
 
 }

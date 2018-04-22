@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TileController : MonoBehaviour {
@@ -15,9 +16,11 @@ public class TileController : MonoBehaviour {
     private BoxCollider buildingCollider;
 
     private Transform buildingPivot;
+    private Transform animatingPoint;
+    private Transform oldAnimatingPoint;
     private const float PIVOT_STARTING_POINT_Z = 2.3f;
-    private bool buildingPivotAnimating = false;
-    private float pivotAnimSpeed = 1.5f;
+    private bool buildingAnimating = false;
+    private float animSpeed = 1.5f;
 
     void Awake() {
         renderer = GetComponent<MeshRenderer>();
@@ -35,22 +38,23 @@ public class TileController : MonoBehaviour {
     }
 
     public void SetBuilding(Building building) {
-        //Debug.Log("Setting building to " + building.Name);
+        
+        //if (UIUpgradeBuilding.CurrentBuilding != null) Debug.Log("Setting building to " + building.Name);
 
         if (building == Buildings.Road) {
             // only roads get their terrain colour changed
             terrainColour = Buildings.RoadColour;
             renderer.material.color = Buildings.RoadColour;
         }
-        if (building != Buildings.Road) {
+        if (building != Buildings.Road && building != Buildings.Generator) {
             // otherwise, turn the collider on and "build" the building
             buildingCollider.enabled = true;
+            // Keep track of old prefab if one exists
+            oldAnimatingPoint = animatingPoint;
             // set all other children to disabled
-            var children = buildingPivot.GetComponentsInChildren<Transform>();
-            foreach (var child in children) {
-                if (child.name != building.Name && child.name != buildingPivot.name) child.gameObject.SetActive(false);
-                else child.gameObject.SetActive(true);
-            }
+            var prefab = WorldBuilder.AllPossibleBuildings.First(x => x.name == building.Name);
+            animatingPoint = Instantiate(prefab, buildingPivot.position, Quaternion.identity, transform).transform;
+            animatingPoint.localEulerAngles = Vector3.zero;
             StartPivotAnim();
         }
 
@@ -59,17 +63,18 @@ public class TileController : MonoBehaviour {
     }
 
     private void StartPivotAnim() {
-        buildingPivot.localPosition = Vector3.forward * PIVOT_STARTING_POINT_Z;
-        buildingPivotAnimating = true;
+        animatingPoint.localPosition = Vector3.forward * PIVOT_STARTING_POINT_Z;
+        buildingAnimating = true;
     }
 
     private void Update() {
         // simple animation so the building rises up from the ground
-        if (buildingPivotAnimating) {
-            buildingPivot.localPosition -= Vector3.forward * pivotAnimSpeed * Time.deltaTime;
-            if (buildingPivot.localPosition.z < 0) {
-                buildingPivot.localPosition = Vector3.zero;
-                buildingPivotAnimating = false;
+        if (buildingAnimating) {
+            animatingPoint.localPosition -= Vector3.forward * animSpeed * Time.deltaTime;
+            if (animatingPoint.localPosition.z < 0) {
+                animatingPoint.localPosition = Vector3.zero;
+                buildingAnimating = false;
+                if (oldAnimatingPoint != null) Destroy(oldAnimatingPoint.gameObject);
             }
         }
     }

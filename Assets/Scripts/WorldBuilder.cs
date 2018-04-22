@@ -8,10 +8,14 @@ using UnityEngine.AI;
 
 public class WorldBuilder : MonoBehaviour {
 
-    public GameObject tilePrefab;
-    public GameObject backdropPrefab;
-    public GameObject skydomePlanePrefab;
-    public GameObject skydomeGeneratorPrefab;
+    public GameObject TilePrefab;
+    public GameObject BackdropPrefab;
+    public GameObject SkydomePlanePrefab;
+    public GameObject SkydomeGeneratorPrefab;
+
+    // hacks hacks hacks
+    public GameObject[] AllBuildings;
+    public static GameObject[] AllPossibleBuildings => instance.AllBuildings;
 
     public int worldSize = 11;
     public int WORLD_SCALE_MULTIPLIER = 20;
@@ -19,6 +23,8 @@ public class WorldBuilder : MonoBehaviour {
 
     public static int WorldScaleMultiplier = 20;
     public static int WorldSize = 20;
+
+    private static WorldBuilder instance;
 
     private static NavMeshSurface navMesh;
 
@@ -29,6 +35,7 @@ public class WorldBuilder : MonoBehaviour {
         
 	void Start () {
 	    navMesh = GetComponentInChildren<NavMeshSurface>();
+	    instance = this;
 
 		BuildWorld();
         GameController.InitialiseGame();
@@ -42,7 +49,7 @@ public class WorldBuilder : MonoBehaviour {
 
         // Spawn underlying object to give tiles small edges in the fastest and hackiest way ever.
         var backdropOffset = new Vector3(WORLD_SCALE_MULTIPLIER / 2, 0.01f, WORLD_SCALE_MULTIPLIER / 2);
-        var backdrop = Instantiate(backdropPrefab, transform.localPosition - backdropOffset, TILE_SPAWN_ROT, transform);
+        var backdrop = Instantiate(BackdropPrefab, transform.localPosition - backdropOffset, TILE_SPAWN_ROT, transform);
         backdrop.name = "Backdrop";
         backdrop.transform.localScale = Vector3.one * WORLD_SCALE_MULTIPLIER * worldSize;
         
@@ -54,7 +61,7 @@ public class WorldBuilder : MonoBehaviour {
         var offset = Enumerable.Range(0, worldSize).Select(x => x - posOffset).ToList();
         var coords = from x in offset from z in offset select new Vector3(x, 0, z);
         foreach (var coord in coords) {
-            var newObj = Instantiate(tilePrefab, transform.localPosition + coord * WORLD_SCALE_MULTIPLIER, TILE_SPAWN_ROT, transform);
+            var newObj = Instantiate(TilePrefab, transform.localPosition + coord * WORLD_SCALE_MULTIPLIER, TILE_SPAWN_ROT, transform);
             newObj.name = "Tile X " + coord.x + ", Z " + coord.z;
             newObj.transform.localScale = Vector3.one * WORLD_SCALE_MULTIPLIER - Vector3.one * 0.2f;
 
@@ -65,7 +72,7 @@ public class WorldBuilder : MonoBehaviour {
             if (coord.x == 0 && coord.z == 0) {
                 tc.SetBuilding(Buildings.Generator);
                 // spawn skydome generator
-                var genny = Instantiate(skydomeGeneratorPrefab, Vector3.zero, Quaternion.identity);
+                var genny = Instantiate(SkydomeGeneratorPrefab, Vector3.zero, Quaternion.identity);
                 genny.transform.SetParent(newObj.transform);
             }
             else if (coord.x <= 1 && coord.x >= -1 && coord.z <= 1 && coord.z >= -1) {
@@ -125,7 +132,7 @@ public class WorldBuilder : MonoBehaviour {
 
     void SpawnSkyplane(Vector3 posOffset, Quaternion rotation, string name, Vector3 scale) {
         var targetPos = transform.localPosition + posOffset + new Vector3(-WORLD_SCALE_MULTIPLIER / 2, 0, -WORLD_SCALE_MULTIPLIER / 2);
-        var t = Instantiate(skydomePlanePrefab, targetPos, rotation, transform);
+        var t = Instantiate(SkydomePlanePrefab, targetPos, rotation, transform);
         t.transform.localScale = scale;
         t.name = "Skyplane " + name;
     }

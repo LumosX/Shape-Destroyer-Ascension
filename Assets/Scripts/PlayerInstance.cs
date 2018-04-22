@@ -12,6 +12,8 @@ public class PlayerInstance : MonoBehaviour {
     public float InteractionDistance = 40f;
 
     public RectTransform pnlCreateNewBuilding;
+    public RectTransform pnlUpgradeGenerator;
+    public RectTransform pnlUpgradeBuilding;
     public RectTransform pnlVictory;
     public RectTransform pnlDefeat;
 
@@ -21,13 +23,13 @@ public class PlayerInstance : MonoBehaviour {
 
     private static Camera mainCamera;
 
-	void Awake () {
-	    controller = GetComponent<FirstPersonController>();
-	    openUIScreen = null;
+    void Awake() {
+        controller = GetComponent<FirstPersonController>();
+        openUIScreen = null;
 
         // get camera reference
-	    mainCamera = GetComponentInChildren<Camera>();
-	}
+        mainCamera = GetComponentInChildren<Camera>();
+    }
 
     void Start() {
         // Start the game with the clipboard out
@@ -46,39 +48,55 @@ public class PlayerInstance : MonoBehaviour {
         return mainCamera.transform;
     }
 
-	void Update () {
+    void Update() {
 
-	    if (Input.GetKeyDown(KeyCode.E)) {
-	        // Close any open UI screens
-	        if (openUIScreen != null) {
-	            openUIScreen.gameObject.SetActive(false);
-	            CloseMenu();
-	        }
+        if (Input.GetKeyDown(KeyCode.E)) {
+            // Close any open UI screens
+            if (openUIScreen != null) {
+                openUIScreen.gameObject.SetActive(false);
+                CloseMenu();
+            }
             // Open a menu
-	        else {
-	            // Create new building menu
-	            if (GameController.HighlightedTile != null && GameController.CanBuildOnHighlightedTile()) {
-	                pnlCreateNewBuilding.gameObject.SetActive(true);
-	                openUIScreen = pnlCreateNewBuilding;
-	                controller.enabled = false;
-	                CanInteract = false;
-	                Cursor.lockState = CursorLockMode.None;
-	                Cursor.visible = true;
-	            }
-                //Debug.Log(GameController.CanBuildOnHighlightedTile());
-	            
-	        }
+            else if (GameController.HighlightedTile != null) {
+                // Create new building menu
+                if (GameController.CanBuildOnHighlightedTile()) {
+                    pnlCreateNewBuilding.gameObject.SetActive(true);
+                    openUIScreen = pnlCreateNewBuilding;
+                    controller.enabled = false;
+                    CanInteract = false;
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                }
+                else if (GameController.HighlightedTileIsGenerator()) {
+                    pnlUpgradeGenerator.gameObject.SetActive(true);
+                    openUIScreen = pnlUpgradeGenerator;
+                    controller.enabled = false;
+                    CanInteract = false;
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                }
+                else if (GameController.CanUpgradeHighlightedTile()) {
+                    UIUpgradeBuilding.CurrentBuilding = GameController.HighlightedTile.CurrentBuilding;
+                    pnlUpgradeBuilding.gameObject.SetActive(true);
+                    openUIScreen = pnlUpgradeBuilding;
+                    controller.enabled = false;
+                    CanInteract = false;
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                }
+
+            }
 
 
-	    }
+        }
 
         // Night triggers.
-	    if (Input.GetKeyDown(KeyCode.K) && !GameController.IsNight) {
+        if (Input.GetKeyDown(KeyCode.K) && !GameController.IsNight) {
             GameController.NightTriggered();
-	    }
-        
-        
-	}
+        }
+
+
+    }
 
     public void WinGame() {
         Time.timeScale = 0;

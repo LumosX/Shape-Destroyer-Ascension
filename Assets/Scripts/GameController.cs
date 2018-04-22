@@ -110,6 +110,22 @@ public class GameController : MonoBehaviour {
         return false;
     }
 
+    public static bool HighlightedTileIsGenerator() {
+        if (HighlightedTile == null) return false;
+        if (HighlightedTile.CurrentBuilding == null) return false;
+        return HighlightedTile.CurrentBuilding == Buildings.Generator;
+    }
+
+    public static bool CanUpgradeHighlightedTile() {
+        if (HighlightedTile == null) return false;
+        var curBuilding = HighlightedTile.CurrentBuilding;
+        if (curBuilding == null) return false;
+        if (curBuilding == Buildings.Generator) return false;
+
+        if (curBuilding == Buildings.Residential3 || curBuilding == Buildings.Commercial3 ||
+            curBuilding == Buildings.Industrial3 || curBuilding == Buildings.Military3) return false;
+        else return true;
+    }
 
     private static Tuple<Produce, int> CalculateTotalProduceAndUpkeep() {
         var result = new Produce();
