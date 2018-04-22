@@ -1,1 +1,3 @@
 Low poly shaders: https://github.com/BrokenVector/LowPolyShaders
+
+Font: Work Sans: https://github.com/weiweihuanghuang/Work-Sans
