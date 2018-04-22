@@ -81,7 +81,7 @@ public class TileController : MonoBehaviour {
         // Only allow "interaction" if player is using proper "weapon" and tile is within range.
         if (!PlayerInstance.CanInteract) return;
         var playerPos = player.transform.position;
-        if (player.CurWeapon != (int)Weapon.ColonyManager) return;
+        if (player.CurWeapon != 0) return; // 0 is the clipboard
         if ((playerPos - transform.position).sqrMagnitude > dist) return;
         // And if the player is not ON the tile (because that's easiest)
         var offset = WorldBuilder.WorldScaleMultiplier / 2;

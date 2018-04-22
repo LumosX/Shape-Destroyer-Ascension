@@ -16,10 +16,18 @@ public class PlayerInstance : MonoBehaviour {
 
     private FirstPersonController controller;
     private RectTransform openUIScreen;
-    
+
+    private static Camera mainCamera;
+
 	void Awake () {
 	    controller = GetComponent<FirstPersonController>();
 	    openUIScreen = null;
+
+        // Start the game with the clipboard out
+        GetComponent<WeaponManager>().SetWeapon(0);
+
+        // get camera reference
+	    mainCamera = GetComponentInChildren<Camera>();
 	}
 
     public void CloseMenu() {
@@ -28,6 +36,10 @@ public class PlayerInstance : MonoBehaviour {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         CanInteract = true;
+    }
+
+    public static Transform MainCameraTransform() {
+        return mainCamera.transform;
     }
 
 	void Update () {

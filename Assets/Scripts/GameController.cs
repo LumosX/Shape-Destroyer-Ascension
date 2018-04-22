@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour {
     public static int Power; // second currency / generator HP
     public static int Population; // free pop
     public static int Happiness; // population happiness; percentage modifier
+    public static int AmmoMags; 
     public static float GeneratorResilience; // % chance of genny to not take damage
 
     
@@ -43,6 +44,7 @@ public class GameController : MonoBehaviour {
         Power = 20;
         Population = 0;
         Happiness = 0;
+        AmmoMags = 5;
         GeneratorResilience = 0.2f;
         HighlightedTile = null;
     }
@@ -113,7 +115,7 @@ public class GameController : MonoBehaviour {
             "Free Population: " + Population,
             "Materials: " + Materials + " (" + (totalProduce.Materials - totalUpkeep) + ")",
             "Happiness: " + Happiness + " (" + totalProduce.Happiness + ")",
-            "Free Ammo Mags: " + totalProduce.Ammunition,
+            "Ammo Mags: " + AmmoMags + " (" + totalProduce.Ammunition + ")",
             "Highlighted Tile: " + (HighlightedTile == null ? "none" : HighlightedTile.name),
             "CurrentBuilding: " + (HighlightedTile == null || HighlightedTile.CurrentBuilding == null ? "none" : HighlightedTile.CurrentBuilding.Name)
         };
