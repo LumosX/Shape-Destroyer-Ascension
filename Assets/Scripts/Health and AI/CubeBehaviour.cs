@@ -30,12 +30,12 @@ public class CubeBehaviour : MonoBehaviour {
         transform.LookAt(target);
 
         // Stop if close.
-        if (distToTarget < 50 * 50 && !agent.isStopped) {
+        if (distToTarget < 1000 && !agent.isStopped) {
             agent.isStopped = true;
             nextFireTime = Time.time + fireDelay;
         }
 
-        if (agent.isStopped && distToTarget > 50 * 50) {
+        if (agent.isStopped && distToTarget > 1000) {
             agent.isStopped = false;
             agent.SetDestination(target.position);
             return;
