@@ -12,6 +12,8 @@ public class PlayerInstance : MonoBehaviour {
     public float InteractionDistance = 40f;
 
     public RectTransform pnlCreateNewBuilding;
+    public RectTransform pnlVictory;
+    public RectTransform pnlDefeat;
 
 
     private FirstPersonController controller;
@@ -23,12 +25,14 @@ public class PlayerInstance : MonoBehaviour {
 	    controller = GetComponent<FirstPersonController>();
 	    openUIScreen = null;
 
-        // Start the game with the clipboard out
-        GetComponent<WeaponManager>().SetWeapon(0);
-
         // get camera reference
 	    mainCamera = GetComponentInChildren<Camera>();
 	}
+
+    void Start() {
+        // Start the game with the clipboard out
+        GetComponent<WeaponManager>().SetWeapon(0);
+    }
 
     public void CloseMenu() {
         openUIScreen = null;
@@ -61,7 +65,7 @@ public class PlayerInstance : MonoBehaviour {
 	                Cursor.lockState = CursorLockMode.None;
 	                Cursor.visible = true;
 	            }
-                Debug.Log(GameController.CanBuildOnHighlightedTile());
+                //Debug.Log(GameController.CanBuildOnHighlightedTile());
 	            
 	        }
 
@@ -75,4 +79,16 @@ public class PlayerInstance : MonoBehaviour {
         
         
 	}
+
+    public void WinGame() {
+        Time.timeScale = 0;
+        pnlVictory.gameObject.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void LoseGame() {
+        Time.timeScale = 0;
+        pnlDefeat.gameObject.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+    }
 }

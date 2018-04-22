@@ -18,12 +18,16 @@ public class PlayerHealthManager : MonoBehaviour, IHealthManager {
 
 	void Update () {
 
-        // Enemy deaths are easy: explode them
+        // Take damage if out of "dome".
+	    var curPos = transform.root.position;
+        if (curPos.x < WorldBuilder.MIN_SPAWN_XN || curPos.x > WorldBuilder.MIN_SPAWN_XP ||
+            curPos.z < WorldBuilder.MIN_SPAWN_ZN || curPos.z > WorldBuilder.MIN_SPAWN_ZP) TakeDamage(2.5f * Time.deltaTime);
+
+
+
+        // just lose the game if you die
 	    if (curHP <= 0) {
-            
-
-
-
+            GameController.PlayerInstance.LoseGame();
 	    }
 
         // health regen
@@ -34,12 +38,10 @@ public class PlayerHealthManager : MonoBehaviour, IHealthManager {
 	}
 
     void OnGUI() {
-        GUI.Label(new Rect(10, Screen.height - 30, 600, 20), "Health: " + curHP + "/" + MaxHP);
+        GUI.Label(new Rect(10, Screen.height - 30, 600, 20), "Health: " + curHP.ToString("F0") + "/" + MaxHP);
     }
 
     public void TakeDamage(float amount) {
-        Debug.Log("player took damage");
-
         lastTimeDamageTaken = Time.time;
         curHP -= amount;
     }

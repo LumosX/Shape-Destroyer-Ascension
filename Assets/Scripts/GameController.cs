@@ -63,9 +63,12 @@ public class GameController : MonoBehaviour {
         Power = 20;
         Population = 0;
         Happiness = 0;
-        AmmoMags = 5;
+        AmmoMags = 3;
         GeneratorResilience = 0.2f;
         HighlightedTile = null;
+
+        // just in case
+        Time.timeScale = 1;
     }
 
     public static void OnNewBuildingCreated(Building type) {
@@ -122,7 +125,7 @@ public class GameController : MonoBehaviour {
 
         // FREE EXTRAS:
         result.Materials += 100;
-        result.Ammunition += 2;
+        //result.Ammunition += 1; // you don't need ammo
 
         return Tuple.Create(result, upkeep);
     }
@@ -132,15 +135,19 @@ public class GameController : MonoBehaviour {
 
         // Spawn enemies.
         // Jeez, I'm really throwing style out the window, huh
-        // TODO FORMULA FOR THAT
-        var numSpheres = Day + 2;
-        var numCubes = Day + 2;
+        var numSpheres = Math.Min(Day + 2, 19);
+        var numCubes = Math.Min(Day + 2, 19);
+        var tier3s = Day / 9;
+        var tier2s = Day / 4;
+
 
         for (var i = 0; i < numCubes; i++) {
-            Instantiate(staticCubePrefabs[0], WorldBuilder.GetRandomEnemySpawnPoint(), Quaternion.identity);
+            var index = i < tier3s ? 2 : i < tier3s + tier2s ? 1 : 0;
+            Instantiate(staticCubePrefabs[index], WorldBuilder.GetRandomEnemySpawnPoint(), Quaternion.identity);
         }
         for (var i = 0; i < numSpheres; i++) {
-            Instantiate(staticSpherePrefabs[0], WorldBuilder.GetRandomEnemySpawnPoint(), Quaternion.identity);
+            var index = i < tier3s ? 2 : i < tier3s + tier2s ? 1 : 0;
+            Instantiate(staticSpherePrefabs[index], WorldBuilder.GetRandomEnemySpawnPoint(), Quaternion.identity);
         }
 
         EnemiesRemaining = numSpheres + numCubes;
@@ -151,7 +158,7 @@ public class GameController : MonoBehaviour {
         IsNight = false;
         Day += 1;
 
-        // TODO: WIN GAME IF TARGET REACHED
+        if (Day > DayTarget) PlayerInstance.WinGame();
 
         // Add new resources and account for upkeep.
         var dailyChanges = CalculateTotalProduceAndUpkeep();
@@ -166,6 +173,8 @@ public class GameController : MonoBehaviour {
 
     public static void GeneratorShot() {
         if (UnityEngine.Random.value > GeneratorResilience) Power -= 1;
+
+        if (Power <= 0) PlayerInstance.LoseGame();
     }
 
     public static void EnemyKilled(int matsRewarded) {

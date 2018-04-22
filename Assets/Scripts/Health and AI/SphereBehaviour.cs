@@ -12,12 +12,14 @@ public class SphereBehaviour : MonoBehaviour {
     public float FireDelay = 2.0f;
 
     private float nextFireTime;
-
+    private Transform visuals;
+    
     void Start() {
         agent = GetComponent<NavMeshAgent>();
 
         target = GameObject.Find("Player/Capsule").transform;
         agent.SetDestination(target.position);
+        visuals = transform.Find("Visuals");
     }
 
     // Spheres go for the player alone.
@@ -26,7 +28,7 @@ public class SphereBehaviour : MonoBehaviour {
         var distToTarget = (transform.position - target.position).sqrMagnitude;
         agent.speed = distToTarget > 100 * 100 ? 40 : 15;
         
-        transform.LookAt(target);
+        visuals.LookAt(target);
 
         // Stop if close.
         if (distToTarget < 50 * 50 && !agent.isStopped) {

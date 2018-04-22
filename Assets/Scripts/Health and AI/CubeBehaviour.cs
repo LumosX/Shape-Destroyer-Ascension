@@ -13,12 +13,15 @@ public class CubeBehaviour : MonoBehaviour {
     private float nextFireTime;
     private float alpha = 0.5f;
 
+    private Transform visuals;
+
     void Start() {
         agent = GetComponent<NavMeshAgent>();
         lr = GetComponent<LineRenderer>();
 
         target = GameObject.Find("GeneratorTarget").transform;
         agent.SetDestination(target.position);
+        visuals = transform.Find("Visuals");
     }
 
     // Cubes go for the generator.
@@ -27,7 +30,7 @@ public class CubeBehaviour : MonoBehaviour {
         var distToTarget = (transform.position - target.position).sqrMagnitude;
         agent.speed = distToTarget > 100 * 100 ? 40 : 15;
         
-        transform.LookAt(target);
+        visuals.LookAt(target);
 
         // Stop if close.
         if (distToTarget < 1000 && !agent.isStopped) {

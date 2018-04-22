@@ -23,7 +23,9 @@ public class WorldBuilder : MonoBehaviour {
     private static NavMeshSurface navMesh;
 
     // Enemy spawn data. Should put them outside of "dome", but not out of the navmesh.
-    private static float MIN_SPAWN_X, MIN_SPAWN_Z, MAX_SPAWN_X, MAX_SPAWN_Z;
+    // Also level bounds
+    public static float MIN_SPAWN_XP, MIN_SPAWN_ZP, MAX_SPAWN_XP, MAX_SPAWN_ZP;
+    public static float MIN_SPAWN_XN, MIN_SPAWN_ZN, MAX_SPAWN_XN, MAX_SPAWN_ZN;
         
 	void Start () {
 	    navMesh = GetComponentInChildren<NavMeshSurface>();
@@ -98,9 +100,26 @@ public class WorldBuilder : MonoBehaviour {
         navMesh.BuildNavMesh();
 
         // set spawn limits
-        MIN_SPAWN_X = MIN_SPAWN_Z = WORLD_SCALE_MULTIPLIER * worldSize / 2 + 10;
-        MAX_SPAWN_X = MAX_SPAWN_Z = (WORLD_SCALE_MULTIPLIER * worldSize * 1.5f / 2) - 5;
-        Debug.Log(MIN_SPAWN_X +"," +MAX_SPAWN_X);
+        // FUCKING OFFSETS EVERY TIME
+        // I actually don't know what's going on with them. Ergo, an atrocious hack.
+        MIN_SPAWN_XP = MIN_SPAWN_ZP = WORLD_SCALE_MULTIPLIER * (worldSize / 2) - (WORLD_SCALE_MULTIPLIER / 2);
+        MIN_SPAWN_XN = MIN_SPAWN_ZN = -WORLD_SCALE_MULTIPLIER * (worldSize / 2) - (WORLD_SCALE_MULTIPLIER / 2);
+        MAX_SPAWN_XP = MAX_SPAWN_ZP = WORLD_SCALE_MULTIPLIER * worldSize * 1.5f / 2;
+        MAX_SPAWN_XN = MAX_SPAWN_ZN = -WORLD_SCALE_MULTIPLIER * worldSize * 1.5f / 2;
+        //Debug.Log(MIN_SPAWN_X +"," +MAX_SPAWN_X);
+
+        var t = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        t.transform.position = new Vector3(MIN_SPAWN_XN, 1, MIN_SPAWN_ZP);
+        t.name = "-X Z";
+        t = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        t.transform.position = new Vector3(MIN_SPAWN_XP, 1, MIN_SPAWN_ZP);
+        t.name = "X Z";
+        t = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        t.transform.position = new Vector3(MIN_SPAWN_XN, 1, MIN_SPAWN_ZN);
+        t.name = "-X -Z";
+        t = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        t.transform.position = new Vector3(MIN_SPAWN_XP, 1, MIN_SPAWN_ZN);
+        t.name = "X -Z";
 
     }
 
@@ -120,8 +139,10 @@ public class WorldBuilder : MonoBehaviour {
         // also makes them negative sometimes
         var pos1 = (UnityEngine.Random.value * 100) % 2 == 0;
         var pos2 = (UnityEngine.Random.value * 100) % 2 == 0;
-        var x = UnityEngine.Random.Range(MIN_SPAWN_X, MAX_SPAWN_X) * (pos1 ? 1 : -1);
-        var z = UnityEngine.Random.Range(MIN_SPAWN_Z, MAX_SPAWN_Z) * (pos1 ? 1 : -1);
+        var pos3 = (UnityEngine.Random.value * 100) % 2 == 0;
+        var pos4 = (UnityEngine.Random.value * 100) % 2 == 0;
+        var x = UnityEngine.Random.Range((pos1 ? MIN_SPAWN_XP : MIN_SPAWN_XN) + 10, (pos2 ? MAX_SPAWN_XP : MAX_SPAWN_XN) - 5);
+        var z = UnityEngine.Random.Range((pos3 ? MIN_SPAWN_ZP : MIN_SPAWN_ZN) + 10, (pos4 ? MIN_SPAWN_ZP : MIN_SPAWN_ZN) - 5);
 
         return new Vector3(x, 0.1f, z);
     }
