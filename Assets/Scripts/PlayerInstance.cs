@@ -68,7 +68,10 @@ public class PlayerInstance : MonoBehaviour {
 
 	    }
 
-        
+        // Night triggers.
+	    if (Input.GetKeyDown(KeyCode.K) && !GameController.IsNight) {
+            GameController.NightTriggered();
+	    }
         
         
 	}

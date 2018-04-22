@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class WorldBuilder : MonoBehaviour {
 
@@ -18,17 +20,17 @@ public class WorldBuilder : MonoBehaviour {
     public static int WorldScaleMultiplier = 20;
     public static int WorldSize = 20;
 
-	// Use this for initialization
+    private static NavMeshSurface navMesh;
+
+    // Enemy spawn data. Should put them outside of "dome", but not out of the navmesh.
+    private static float MIN_SPAWN_X, MIN_SPAWN_Z, MAX_SPAWN_X, MAX_SPAWN_Z;
+        
 	void Start () {
+	    navMesh = GetComponentInChildren<NavMeshSurface>();
+
 		BuildWorld();
         GameController.InitialiseGame();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
 
 
     void BuildWorld() {
@@ -89,6 +91,17 @@ public class WorldBuilder : MonoBehaviour {
         SpawnSkyplane(Vector3.left * skydomePosMult + vertOffset, Quaternion.Euler(0, 90, 0), "Left", skydomeSideScale);
         SpawnSkyplane(Vector3.right * skydomePosMult + vertOffset, Quaternion.Euler(0, 90, 0), "Right", skydomeSideScale);
         SpawnSkyplane(Vector3.up * skydomeYPos, TILE_SPAWN_ROT, "Up", skydomeUpScale);
+
+        // Make navmesh
+        navMesh.size = new Vector3(WORLD_SCALE_MULTIPLIER * worldSize * 1.5f, 12, WORLD_SCALE_MULTIPLIER * worldSize * 1.5f);
+        navMesh.center = new Vector3(0, 5, 0);
+        navMesh.BuildNavMesh();
+
+        // set spawn limits
+        MIN_SPAWN_X = MIN_SPAWN_Z = WORLD_SCALE_MULTIPLIER * worldSize / 2 + 10;
+        MAX_SPAWN_X = MAX_SPAWN_Z = (WORLD_SCALE_MULTIPLIER * worldSize * 1.5f / 2) - 5;
+        Debug.Log(MIN_SPAWN_X +"," +MAX_SPAWN_X);
+
     }
 
     void SpawnSkyplane(Vector3 posOffset, Quaternion rotation, string name, Vector3 scale) {
@@ -96,6 +109,21 @@ public class WorldBuilder : MonoBehaviour {
         var t = Instantiate(skydomePlanePrefab, targetPos, rotation, transform);
         t.transform.localScale = scale;
         t.name = "Skyplane " + name;
+    }
+
+    public static void RebuildNavmesh() {
+        if (navMesh.navMeshData != null) navMesh.UpdateNavMesh(navMesh.navMeshData);
+    }
+    
+    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
+    public static Vector3 GetRandomEnemySpawnPoint() {
+        // also makes them negative sometimes
+        var pos1 = (UnityEngine.Random.value * 100) % 2 == 0;
+        var pos2 = (UnityEngine.Random.value * 100) % 2 == 0;
+        var x = UnityEngine.Random.Range(MIN_SPAWN_X, MAX_SPAWN_X) * (pos1 ? 1 : -1);
+        var z = UnityEngine.Random.Range(MIN_SPAWN_Z, MAX_SPAWN_Z) * (pos1 ? 1 : -1);
+
+        return new Vector3(x, 0.1f, z);
     }
 
 }

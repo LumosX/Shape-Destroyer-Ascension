@@ -27,4 +27,10 @@ public class Bullet : MonoBehaviour {
 
 	    if (Time.time > startTime + TTL) Destroy(gameObject);
 	}
+
+    public void OnTriggerEnter(Collider col) {
+        var target = col.transform.GetComponent<IHealthManager>();
+        target?.TakeDamage(Damage);
+        Destroy(gameObject);
+    }
 }

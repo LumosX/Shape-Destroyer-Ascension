@@ -55,6 +55,7 @@ public class TileController : MonoBehaviour {
         }
 
         CurrentBuilding = building;
+        WorldBuilder.RebuildNavmesh();
     }
 
     private void StartPivotAnim() {
@@ -80,6 +81,8 @@ public class TileController : MonoBehaviour {
 
         // Only allow "interaction" if player is using proper "weapon" and tile is within range.
         if (!PlayerInstance.CanInteract) return;
+        // and if it's day
+        if (GameController.IsNight) return;
         var playerPos = player.transform.position;
         if (player.CurWeapon != 0) return; // 0 is the clipboard
         if ((playerPos - transform.position).sqrMagnitude > dist) return;
@@ -95,6 +98,7 @@ public class TileController : MonoBehaviour {
     public void OnMouseOver() {
         // Forcefully de-highlight the tile if the player steps on it
         if (!PlayerInstance.CanInteract) return;
+        if (GameController.IsNight) return;
         var playerPos = GameController.PlayerInstance.transform.position;
         var offset = WorldBuilder.WorldScaleMultiplier / 2;
         if ((playerPos.x > transform.position.x - offset && playerPos.x < transform.position.x + offset) &&
@@ -103,6 +107,7 @@ public class TileController : MonoBehaviour {
 
     public void OnMouseExit() {
         if (!PlayerInstance.CanInteract) return;
+        if (GameController.IsNight) return;
         renderer.material.color = terrainColour;
         GameController.HighlightedTile = null;
     }
