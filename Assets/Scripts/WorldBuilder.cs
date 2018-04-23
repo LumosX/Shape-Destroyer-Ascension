@@ -115,7 +115,7 @@ public class WorldBuilder : MonoBehaviour {
         MAX_SPAWN_XN = MAX_SPAWN_ZN = -WORLD_SCALE_MULTIPLIER * worldSize * 1.5f / 2;
         //Debug.Log(MIN_SPAWN_X +"," +MAX_SPAWN_X);
 
-        var t = GameObject.CreatePrimitive(PrimitiveType.Cube);
+ /*       var t = GameObject.CreatePrimitive(PrimitiveType.Cube);
         t.transform.position = new Vector3(MIN_SPAWN_XN, 1, MIN_SPAWN_ZP);
         t.name = "-X Z";
         t = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -126,7 +126,7 @@ public class WorldBuilder : MonoBehaviour {
         t.name = "-X -Z";
         t = GameObject.CreatePrimitive(PrimitiveType.Cube);
         t.transform.position = new Vector3(MIN_SPAWN_XP, 1, MIN_SPAWN_ZN);
-        t.name = "X -Z";
+        t.name = "X -Z";*/
 
     }
 

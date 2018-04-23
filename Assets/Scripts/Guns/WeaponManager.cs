@@ -28,10 +28,10 @@ public class WeaponManager : MonoBehaviour {
         // this is painful
         var weaponLabel = GameController.GameUIScreen.CurrentlyEquipped;
         var gunTexts = "";
-        gunTexts += (player.CurWeapon == 0 ? "<b>" : "") + "1. Colony Manager" + (player.CurWeapon == 0 ? "</b>" : "") + "\n";
-        gunTexts += (player.CurWeapon == 1 ? "<b>" : "") + "2. Type 7 PDW" + (player.CurWeapon == 1 ? "</b>" : "") + "\n";
-        gunTexts += (player.CurWeapon == 2 ? "<b>" : "") + "3. Type 29 Coilgun" + (player.CurWeapon == 2 ? "</b>" : "") + "\n";
-        gunTexts += (player.CurWeapon == 3 ? "<b>" : "") + "4. Type 93 Shotgun" + (player.CurWeapon == 3 ? "</b>" : "") + "\n";
+        gunTexts += (player.CurWeapon == 0 ? "<b>" : "") + "1: Colony Manager" + (player.CurWeapon == 0 ? "</b>" : "") + "\n";
+        gunTexts += (player.CurWeapon == 1 ? "<b>" : "") + "2: Type 7 PDW" + (player.CurWeapon == 1 ? "</b>" : "") + "\n";
+        gunTexts += (player.CurWeapon == 2 ? "<b>" : "") + "3: Type 29 Coilgun" + (player.CurWeapon == 2 ? "</b>" : "") + "\n";
+        gunTexts += (player.CurWeapon == 3 ? "<b>" : "") + "4: Type 93 Shotgun" + (player.CurWeapon == 3 ? "</b>" : "") + "\n";
         weaponLabel.text = gunTexts + "\n" + 
                            (GameController.IsNight ? "<b>" : "") + "K: Begin next night" + (GameController.IsNight ? "</b>" : "") + 
                            "\nE: Interact";

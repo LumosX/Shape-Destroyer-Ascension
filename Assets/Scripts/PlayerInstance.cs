@@ -116,12 +116,22 @@ public class PlayerInstance : MonoBehaviour {
     public void WinGame() {
         Time.timeScale = 0;
         pnlVictory.gameObject.SetActive(true);
+        openUIScreen = pnlVictory;
+        controller.enabled = false;
+        CanInteract = false;
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        pnlGameHUD.gameObject.SetActive(false);
     }
 
     public void LoseGame() {
         Time.timeScale = 0;
         pnlDefeat.gameObject.SetActive(true);
+        openUIScreen = pnlDefeat;
+        controller.enabled = false;
+        CanInteract = false;
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        pnlGameHUD.gameObject.SetActive(false);
     }
 }

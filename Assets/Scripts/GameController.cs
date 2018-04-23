@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditorInternal;
 using UnityEngine;
 
 public class GameController : MonoBehaviour {
@@ -54,6 +50,7 @@ public class GameController : MonoBehaviour {
     private static GameController inst;
 
     private bool transmissionPlayed = false;
+    private float levelStartTime;
 
     void Awake() {
         if (inst == null) inst = this;
@@ -62,6 +59,7 @@ public class GameController : MonoBehaviour {
         staticSpherePrefabs = SpherePrefabs;
 
         transmissionPlayed = false;
+        levelStartTime = Time.time;
     }
 
     public static void InitialiseGame() {
@@ -81,7 +79,7 @@ public class GameController : MonoBehaviour {
     }
 
     void Update() {
-        if (Time.time > 6.0f && !transmissionPlayed) {
+        if (Time.time > levelStartTime + 6.0f && !transmissionPlayed) {
             PlayerInstance.GetComponent<AudioSource>().PlayOneShot(TransmissionAudio);
             transmissionPlayed = true;
         }

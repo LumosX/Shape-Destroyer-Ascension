@@ -35,6 +35,10 @@ public class PlayerHealthManager : MonoBehaviour, IHealthManager {
 	        curHP += HPRegenRate * Time.deltaTime;
 	        if (curHP > MaxHP) curHP = MaxHP;
 	    }
+
+        // update health label
+	    GameController.GameUIScreen.HealthLabel.text = $"\n\n\n\n\n<b>HEALTH {curHP:F0}/{MaxHP}</b>";
+
 	}
     
 
