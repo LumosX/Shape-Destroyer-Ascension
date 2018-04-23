@@ -17,6 +17,8 @@ public class Weapon : MonoBehaviour {
     public float AmmoRegenWaitTime = 0;
     public float AmmoRegenFireDelay = 4;
 
+    public AudioClip firingSound;
+
 
     private int curAmmo;
     private bool canFire;
@@ -36,6 +38,7 @@ public class Weapon : MonoBehaviour {
             var camTF = PlayerInstance.MainCameraTransform();
             for (int i = 0; i < NumberOfPellets; i++) {
                 Instantiate(BulletPrefab, camTF.position + camTF.forward * 0.4f, camTF.rotation);
+                if (firingSound) transform.root.GetComponent<AudioSource>().PlayOneShot(firingSound);
             }
 
             nextFireTime = Time.time + RefireDelay;

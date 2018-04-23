@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour {
 
+    public AudioClip TransmissionAudio;
+
     public static bool IsNight = false;
     public static int Day = 1;
     public static int DayTarget = 10;
@@ -51,11 +53,15 @@ public class GameController : MonoBehaviour {
 
     private static GameController inst;
 
+    private bool transmissionPlayed = false;
+
     void Awake() {
         if (inst == null) inst = this;
 
         staticCubePrefabs = CubePrefabs;
         staticSpherePrefabs = SpherePrefabs;
+
+        transmissionPlayed = false;
     }
 
     public static void InitialiseGame() {
@@ -72,6 +78,13 @@ public class GameController : MonoBehaviour {
 
         // just in case
         Time.timeScale = 1;
+    }
+
+    void Update() {
+        if (Time.time > 6.0f && !transmissionPlayed) {
+            PlayerInstance.GetComponent<AudioSource>().PlayOneShot(TransmissionAudio);
+            transmissionPlayed = true;
+        }
     }
 
     public static void OnNewBuildingCreated(Building type) {
