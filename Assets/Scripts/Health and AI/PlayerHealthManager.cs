@@ -36,10 +36,7 @@ public class PlayerHealthManager : MonoBehaviour, IHealthManager {
 	        if (curHP > MaxHP) curHP = MaxHP;
 	    }
 	}
-
-    void OnGUI() {
-        GUI.Label(new Rect(10, Screen.height - 30, 600, 20), "Health: " + curHP.ToString("F0") + "/" + MaxHP);
-    }
+    
 
     public void TakeDamage(float amount) {
         lastTimeDamageTaken = Time.time;

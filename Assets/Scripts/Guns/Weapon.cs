@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Weapon : MonoBehaviour {
 
@@ -57,10 +58,17 @@ public class Weapon : MonoBehaviour {
     }
 
     void OnGUI() {
-        // weapons print their own ammo and shit
-        GUI.Label(new Rect(10, Screen.height - 80, 600, 20), "Equipped: " + Name);
-        GUI.Label(new Rect(10, Screen.height - 60, 600, 20),
-            curAmmo + "/" + MagSize + (UsesAmmoMags ? " | Mags: " + GameController.AmmoMags : " (Fabricates ammo over time)"));
+
+        var equipment = GameController.GameUIScreen.CurrentlyEquipped;
+        var ammoLabel = GameController.GameUIScreen.AmmoLabel;
+
+        ammoLabel.text = "<b>" + Name + "\n\n";
+        ammoLabel.text += "AMMO " + curAmmo + "/" + MagSize + "</b>\n";
+        ammoLabel.text += (UsesAmmoMags
+            ? "<b>MAGS LEFT: " + GameController.AmmoMags + "</b>\n"
+            : " (Fabricates ammo\nover time)");
+        ammoLabel.text += "\n\n";
+
     }
 
 }

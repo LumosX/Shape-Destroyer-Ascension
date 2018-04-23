@@ -11,11 +11,13 @@ public class PlayerInstance : MonoBehaviour {
     public int CurWeapon = 0;
     public float InteractionDistance = 40f;
 
+    public RectTransform pnlGameHUD;
     public RectTransform pnlCreateNewBuilding;
     public RectTransform pnlUpgradeGenerator;
     public RectTransform pnlUpgradeBuilding;
     public RectTransform pnlVictory;
     public RectTransform pnlDefeat;
+    public RectTransform pnlEscapeMenu;
 
 
     private FirstPersonController controller;
@@ -42,6 +44,7 @@ public class PlayerInstance : MonoBehaviour {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         CanInteract = true;
+        pnlGameHUD.gameObject.SetActive(true);
     }
 
     public static Transform MainCameraTransform() {
@@ -66,6 +69,7 @@ public class PlayerInstance : MonoBehaviour {
                     CanInteract = false;
                     Cursor.lockState = CursorLockMode.None;
                     Cursor.visible = true;
+                    pnlGameHUD.gameObject.SetActive(false);
                 }
                 else if (GameController.HighlightedTileIsGenerator()) {
                     pnlUpgradeGenerator.gameObject.SetActive(true);
@@ -74,6 +78,7 @@ public class PlayerInstance : MonoBehaviour {
                     CanInteract = false;
                     Cursor.lockState = CursorLockMode.None;
                     Cursor.visible = true;
+                    pnlGameHUD.gameObject.SetActive(false);
                 }
                 else if (GameController.CanUpgradeHighlightedTile()) {
                     UIUpgradeBuilding.CurrentBuilding = GameController.HighlightedTile.CurrentBuilding;
@@ -83,12 +88,22 @@ public class PlayerInstance : MonoBehaviour {
                     CanInteract = false;
                     Cursor.lockState = CursorLockMode.None;
                     Cursor.visible = true;
+                    pnlGameHUD.gameObject.SetActive(false);
                 }
 
             }
-
-
         }
+        // Escape menu is special
+        if (Input.GetKeyDown(KeyCode.Escape) && openUIScreen == null) {
+            pnlEscapeMenu.gameObject.SetActive(true);
+            openUIScreen = pnlEscapeMenu;
+            controller.enabled = false;
+            CanInteract = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            pnlGameHUD.gameObject.SetActive(false);
+        }
+
 
         // Night triggers.
         if (Input.GetKeyDown(KeyCode.K) && !GameController.IsNight) {

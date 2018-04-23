@@ -27,6 +27,7 @@ public class GameController : MonoBehaviour {
     public static int IncomeModifierPercent => Happiness * 5;
 
 
+    public UIGameUIScreen GameUI;
     public PlayerInstance PlayerInstanceReference;
     public GameObject[] CubePrefabs;
     public GameObject[] SpherePrefabs;
@@ -36,6 +37,8 @@ public class GameController : MonoBehaviour {
     private static GameObject[] staticCubePrefabs;
     private static GameObject[] staticSpherePrefabs;
 
+
+    public static UIGameUIScreen GameUIScreen => inst.GameUI;
 
     public static PlayerInstance PlayerInstance {
         get {
@@ -63,7 +66,7 @@ public class GameController : MonoBehaviour {
         Power = 20;
         Population = 0;
         Happiness = 0;
-        AmmoMags = 3;
+        AmmoMags = 5;
         GeneratorResilience = 0.2f;
         HighlightedTile = null;
 
@@ -122,8 +125,7 @@ public class GameController : MonoBehaviour {
         if (curBuilding == null) return false;
         if (curBuilding == Buildings.Generator) return false;
 
-        if (curBuilding == Buildings.Residential3 || curBuilding == Buildings.Commercial3 ||
-            curBuilding == Buildings.Industrial3 || curBuilding == Buildings.Military3) return false;
+        if (curBuilding.UpgradesTo == null) return false;
         else return true;
     }
 
@@ -207,7 +209,21 @@ public class GameController : MonoBehaviour {
         var totalProduce = dailyChanges.Item1;
         var totalUpkeep = dailyChanges.Item2;
 
-        var labels = new string[] {
+
+        var dayNightLabel = GameUI.DayNightEnemies;
+        dayNightLabel.text =
+            $"<b>{(IsNight ? "NIGHT" : "DAY")} {Day}/{DayTarget} | {(IsNight ? "ENEMIES REMAINING: " + EnemiesRemaining : "PRESS K WHEN READY FOR THE NEXT NIGHT")}</b>";
+
+        var genResPercent = (GeneratorResilience * 100).ToString("F0");
+        var matsLabel = GameUI.Materials;
+        matsLabel.text = $"<b>POWER: {Power} | Generator Resilience: {genResPercent}%</b>\n" +
+                         $"<b>FREE POPULATION: {Population}</b>\n" + 
+                         $"<b>MATERIALS: {Materials}</b> ({totalProduce.Materials - totalUpkeep})\n" +
+                         $"<b>AMMO MAGAZINES: {AmmoMags}</b> ({totalProduce.Ammunition})\n" + 
+                         $"<b>HAPPINESS: {Happiness}</b> ({totalProduce.Happiness})\n" +
+                         $"(Extra income from kills: {IncomeModifierPercent}%)\n";
+
+      /*  var labels = new string[] {
             (IsNight ? "NIGHT " : "DAY ") + Day + "/" + DayTarget,
             "Power: " + Power,
             "Generator Resilience: " + (GeneratorResilience * 100).ToString("F0") + "%",
@@ -226,12 +242,12 @@ public class GameController : MonoBehaviour {
             GUI.Label(new Rect(10, startY, 600, 20), label);
             startY += offsetY;
         }
-
-
+*/
+/*
         // Also make a crosshair, eh?
         const int crosshairSize = 18;
         const int off = crosshairSize / 2;
-        GUI.DrawTexture(new Rect(Screen.width/2 - off, Screen.height / 2 - off, crosshairSize, crosshairSize), Crosshair);
+        GUI.DrawTexture(new Rect(Screen.width/2 - off, Screen.height / 2 - off, crosshairSize, crosshairSize), Crosshair);*/
 
     }
 
